@@ -18,7 +18,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.POST("/login", component.HandleLogin)
+	router.POST("/api/login", component.HandleLogin)
 
 	router.Run(":" + port)
 }
