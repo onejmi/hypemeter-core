@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/heroku/hypemeter-core/lib/component"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -18,11 +18,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "pong",
-		})
-	})
+	router.POST("/login", component.HandleLogin)
 
 	router.Run(":" + port)
 }
