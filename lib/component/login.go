@@ -23,7 +23,7 @@ func HandleLogin(c *gin.Context) {
 	var auth AuthenticationRequest
 	err := json.Unmarshal(rawBody, &auth)
 
-	if err != nil {
+	if err == nil {
 		verifier := googleAuthIDTokenVerifier.Verifier{}
 		verr := verifier.VerifyIDToken(auth.IdToken, audiences)
 		if verr == nil {
@@ -42,7 +42,7 @@ func HandleLogin(c *gin.Context) {
 		}
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": err,
+			"status": "Is your request body empty or missing fields?",
 		})
 	}
 
