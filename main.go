@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/heroku/hypemeter-core/lib/component"
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +12,8 @@ func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		//log.Fatal("$PORT must be set")
+		port = "8888"
 	}
 
 	router := gin.Default()
