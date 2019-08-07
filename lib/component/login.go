@@ -41,9 +41,8 @@ func HandleLogin(c *gin.Context) {
 			})
 		}
 	} else {
-		print(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "Please provide an ID and Access Token",
+			"status": err,
 		})
 	}
 
