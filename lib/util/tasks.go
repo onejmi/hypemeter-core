@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"github.com/heroku/hypemeter-core/lib/data"
 	"github.com/jasonlvhit/gocron"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,28 +13,28 @@ func SetupCronJobs() {
 }
 
 func invalidateExpiredSessions() {
-	print("logging")
+	fmt.Println("logging")
 	cursor := data.List("sessions", bson.D{{}})
-	print("double logz")
+	fmt.Println("double logz")
 
 	for {
-		print("ok somewhere")
+		fmt.Println("ok somewhere")
 		var session data.Session
 		attemptError := cursor.Decode(&session)
-		print("wait for it...")
+		fmt.Println("wait for it...")
 		if attemptError != nil {
 			break
 		}
-		print("wait what")
+		fmt.Println("wait what")
 		if session.Expired() {
-			print("um")
+			fmt.Println("um")
 			_, err := data.Delete("sessions", bson.D{{Key: "session_id", Value: session.SessionID}})
 			if err != nil {
-				print(err)
+				fmt.Println(err)
 			}
 		}
 		if !cursor.Next(context.TODO()) {
-			print("huh")
+			fmt.Println("huh")
 			break
 		}
 	}
