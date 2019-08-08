@@ -17,7 +17,7 @@ func invalidateExpiredSessions() {
 	for {
 		var session data.Session
 		attemptError := cursor.Decode(&session)
-		if attemptError == nil {
+		if attemptError != nil {
 			break
 		}
 		if session.Expired() {
