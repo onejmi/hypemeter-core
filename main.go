@@ -25,4 +25,6 @@ func main() {
 	router.POST("/api/login", component.HandleLogin)
 
 	router.Run(":" + port)
+
+	print("We're up and running!")
 }
