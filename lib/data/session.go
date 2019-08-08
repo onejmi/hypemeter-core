@@ -11,7 +11,6 @@ type Session struct {
 }
 
 func (s Session) Expired() bool {
-	print("logging..")
 	var currTime = time.Now().Unix()
 	return s.CreationTime < (currTime - lifeDuration)
 }
