@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/heroku/hypemeter-core/lib/component"
 	"github.com/heroku/hypemeter-core/lib/data"
+	"github.com/heroku/hypemeter-core/lib/util"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,8 @@ func main() {
 	router.POST("/api/login", component.HandleLogin)
 
 	router.Run(":" + port)
+
+	util.SetupCronJobs()
 
 	print("We're up and running!")
 }

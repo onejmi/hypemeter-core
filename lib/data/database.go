@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -55,9 +56,20 @@ func Exists(collectionName string, filters interface{}) bool {
 	return true
 }
 
-func GetOne(collectionName string, filters interface{}, target interface{}) interface{} {
+func GetOne(collectionName string, filters interface{}, target interface{}) error {
 	return DatabaseClient.Database(DatabaseName).Collection(collectionName).
 		FindOne(context.TODO(), filters).Decode(target)
+}
+
+func List(collectionName string, filters bson.D) *mongo.Cursor {
+	cursor, _ := DatabaseClient.Database(DatabaseName).Collection(collectionName).
+		Find(context.TODO(), filters)
+	return cursor
+}
+
+func Delete(collectionName string, filters bson.D) (*mongo.DeleteResult, error) {
+	return DatabaseClient.Database(DatabaseName).Collection(collectionName).
+		DeleteOne(context.TODO(), filters)
 }
 
 func Insert(collectionName string, entry interface{}) {
@@ -67,5 +79,5 @@ func Insert(collectionName string, entry interface{}) {
 		print(err)
 	}
 
-	fmt.Printf("Inserted %v in %s @ %d", transaction.InsertedID, collectionName, time.Now().Second())
+	fmt.Printf("Inserted %v in %s @ %d", transaction.InsertedID, collectionName, time.Now().Unix())
 }

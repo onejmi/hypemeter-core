@@ -1,14 +1,17 @@
 package component
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	googleAuthIDTokenVerifier "github.com/futurenda/google-auth-id-token-verifier"
 	"github.com/gin-gonic/gin"
 	"github.com/heroku/hypemeter-core/lib/data"
 	"github.com/heroku/hypemeter-core/lib/util"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 var audiences = []string{
@@ -31,7 +34,6 @@ func HandleLogin(c *gin.Context) {
 		verr := verifier.VerifyIDToken(auth.IdToken, audiences)
 		if verr == nil {
 			googleProfile, derr := googleAuthIDTokenVerifier.Decode(auth.IdToken)
-			//ID IS STORED IN claimSet.Sub
 			if derr == nil {
 				if !data.Exists("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}) {
 					data.Insert("profiles", data.Profile{
@@ -43,11 +45,21 @@ func HandleLogin(c *gin.Context) {
 						GoogleAuth: data.OAuth{
 							AccessToken: auth.AccessToken,
 						},
+						CreationTime: time.Now().Unix(),
 					})
 				}
-				var profile data.Profile
-				data.GetOne("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}, &profile)
-				c.JSON(http.StatusOK, profile)
+				var session data.Session
+				if data.Exists("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}) {
+					_ = data.GetOne("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}, &session)
+				} else {
+					sessionUUID, _ := uuid.New()
+					data.Insert("sessions", data.Session{
+						SessionID:    hex.EncodeToString(sessionUUID[:]),
+						UserID:       googleProfile.Sub,
+						CreationTime: time.Now().Unix(),
+					})
+				}
+				c.JSON(http.StatusOK, session)
 			} else {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "Failed to decode ID Token",

@@ -14,6 +14,7 @@ require (
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/heroku/x v0.0.0-20171004170240-705849e307dd
+	github.com/jasonlvhit/gocron v0.0.0-20190807165158-02e46f9ad554
 	github.com/kardianos/govendor v1.0.9 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/manucorporat/sse v0.0.0-20150604091100-c142f0f1baea // indirect
