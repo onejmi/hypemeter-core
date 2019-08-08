@@ -49,9 +49,7 @@ func HandleLogin(c *gin.Context) {
 					})
 				}
 				var session data.Session
-				if data.Exists("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}) {
-					_ = data.GetOne("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}, &session)
-				} else {
+				if !data.Exists("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}) {
 					sessionUUID, _ := uuid.New()
 					data.Insert("sessions", data.Session{
 						SessionID:    hex.EncodeToString(sessionUUID[:]),
@@ -59,6 +57,7 @@ func HandleLogin(c *gin.Context) {
 						CreationTime: time.Now().Unix(),
 					})
 				}
+				_ = data.GetOne("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}, &session)
 				c.JSON(http.StatusOK, session)
 			} else {
 				c.JSON(http.StatusBadRequest, gin.H{
