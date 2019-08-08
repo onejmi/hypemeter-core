@@ -16,7 +16,10 @@ func invalidateExpiredSessions() {
 
 	for {
 		var session data.Session
-		_ = cursor.Decode(&session)
+		attemptError := cursor.Decode(&session)
+		if attemptError == nil {
+			break
+		}
 		if session.Expired() {
 			_, err := data.Delete("sessions", bson.D{{Key: "session_id", Value: session.SessionID}})
 			if err != nil {
