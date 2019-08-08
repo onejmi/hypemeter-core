@@ -10,6 +10,7 @@ import (
 
 func SetupCronJobs() {
 	gocron.Every(3).Minutes().Do(invalidateExpiredSessions)
+	gocron.Start()
 }
 
 func invalidateExpiredSessions() {
