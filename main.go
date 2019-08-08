@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/heroku/hypemeter-core/lib/component"
+	"github.com/heroku/hypemeter-core/lib/data"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,9 @@ func main() {
 		//log.Fatal("$PORT must be set")
 		port = "8888"
 	}
+
+	//connect to DB
+	data.Connect()
 
 	router := gin.Default()
 

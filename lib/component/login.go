@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	googleAuthIDTokenVerifier "github.com/futurenda/google-auth-id-token-verifier"
 	"github.com/gin-gonic/gin"
+	"github.com/heroku/hypemeter-core/lib/data"
+	"github.com/heroku/hypemeter-core/lib/util"
+	"go.mongodb.org/mongo-driver/bson"
 	"io/ioutil"
 	"net/http"
 )
@@ -27,9 +30,24 @@ func HandleLogin(c *gin.Context) {
 		verifier := googleAuthIDTokenVerifier.Verifier{}
 		verr := verifier.VerifyIDToken(auth.IdToken, audiences)
 		if verr == nil {
-			claimSet, derr := googleAuthIDTokenVerifier.Decode(auth.IdToken)
+			googleProfile, derr := googleAuthIDTokenVerifier.Decode(auth.IdToken)
+			//ID IS STORED IN claimSet.Sub
 			if derr == nil {
-				c.JSON(http.StatusOK, claimSet)
+				if !data.Exists("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}) {
+					data.Insert("profiles", data.Profile{
+						Id:       googleProfile.Sub,
+						Email:    googleProfile.Email,
+						Username: util.GrabYoutubeName(googleProfile.Email, auth.AccessToken),
+						Picture:  googleProfile.Picture,
+						Tier:     0,
+						GoogleAuth: data.OAuth{
+							AccessToken: auth.AccessToken,
+						},
+					})
+				}
+				var profile data.Profile
+				data.GetOne("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}, &profile)
+				c.JSON(http.StatusOK, profile)
 			} else {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status": "Failed to decode ID Token",
