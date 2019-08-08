@@ -19,9 +19,9 @@ func GrabYoutubeName(email string, accessToken string) (name string) {
 	ownChannelRequest, _ := youtubeService.Channels.List("snippet,statistics").Mine(true).Do()
 	items := ownChannelRequest.Items
 
-	var topSubCount uint64 = -1
+	var topSubCount uint64 = 0
 	for _, item := range items {
-		if item.Statistics.SubscriberCount > topSubCount {
+		if item.Statistics.SubscriberCount >= topSubCount {
 			topSubCount = item.Statistics.SubscriberCount
 			name = item.Snippet.Title
 		}
