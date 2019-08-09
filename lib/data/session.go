@@ -2,7 +2,7 @@ package data
 
 import "time"
 
-const lifeDuration int64 = 3600
+const lifeDuration int64 = 3600 * 1000
 
 type Session struct {
 	SessionID    string `json:"session_id" bson:"session_id"`
