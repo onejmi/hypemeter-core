@@ -14,7 +14,7 @@ func SetupCronJobs() {
 }
 
 func invalidateExpiredSessions() {
-	cursor := data.List("sessions", bson.D{{}})
+	cursor := data.List("sessions", bson.D{})
 
 	for {
 		var session data.Session
