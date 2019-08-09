@@ -16,7 +16,8 @@ func SetupCronJobs() {
 func invalidateExpiredSessions() {
 	cursor := data.List("sessions", bson.D{})
 
-	for {
+	defer cursor.Close(context.TODO())
+	for cursor.Next(context.TODO()) {
 		var session data.Session
 		attemptError := cursor.Decode(&session)
 		fmt.Println("wait for it...")
@@ -31,10 +32,6 @@ func invalidateExpiredSessions() {
 			if err != nil {
 				fmt.Println(err)
 			}
-		}
-		if !cursor.Next(context.TODO()) {
-			fmt.Println("huh")
-			break
 		}
 	}
 }
