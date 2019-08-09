@@ -21,13 +21,12 @@ func main() {
 	//connect to DB
 	data.Connect()
 
+	//run cronjobs
+	util.SetupCronJobs()
+
 	router := gin.Default()
 
 	router.POST("/api/login", component.HandleLogin)
 
 	router.Run(":" + port)
-
-	util.SetupCronJobs()
-
-	print("We're up and running!")
 }

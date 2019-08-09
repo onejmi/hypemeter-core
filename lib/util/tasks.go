@@ -9,7 +9,6 @@ import (
 )
 
 func SetupCronJobs() {
-	fmt.Println("Setting up cron jobs..")
 	gocron.Every(3).Minutes().Do(invalidateExpiredSessions)
 	gocron.Start()
 }
