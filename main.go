@@ -10,6 +10,8 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 )
 
+const apiBasePath = "api/v1"
+
 func main() {
 	port := os.Getenv("PORT")
 
@@ -21,12 +23,15 @@ func main() {
 	//connect to DB
 	data.Connect()
 
-	//run cronjobs
+	//cron jobs
 	util.SetupCronJobs()
 
 	router := gin.Default()
+	//groups
+	authorized := router.Group(apiBasePath, data.Authorize)
+	authorized.GET("/test", data.Test)
 
-	router.POST("/api/login", component.HandleLogin)
+	router.POST("/login", component.HandleLogin)
 
 	router.Run(":" + port)
 }

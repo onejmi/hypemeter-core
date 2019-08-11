@@ -25,7 +25,7 @@ func invalidateExpiredSessions() {
 			break
 		}
 		if session.Expired() {
-			_, err := data.Delete("sessions", bson.D{{Key: "session_id", Value: session.SessionID}})
+			err := session.Remove()
 			if err != nil {
 				fmt.Println(err.Error())
 			}
