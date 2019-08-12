@@ -19,6 +19,7 @@ type Session struct {
 func (s Session) Expired() bool {
 	var currTime = time.Now().Unix()
 	var timeElapsed = currTime - s.CreationTime
+	fmt.Println(timeElapsed)
 	return timeElapsed > lifeDuration
 }
 
