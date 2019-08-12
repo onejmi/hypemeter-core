@@ -34,11 +34,14 @@ func Authorize(c *gin.Context) {
 		if session.Expired() {
 			_ = session.Remove()
 			_ = c.AbortWithError(http.StatusUnauthorized, ResponseErr{Status: "Invalid Session ID"})
+			return
 		} else {
 			c.Next()
+			return
 		}
 	} else {
 		_ = c.AbortWithError(http.StatusUnauthorized, ResponseErr{Status: "Invalid Session ID"})
+		return
 	}
 }
 
