@@ -1,4 +1,4 @@
-package util
+package data
 
 type ResponseErr struct {
 	Status string `json:"error"`
