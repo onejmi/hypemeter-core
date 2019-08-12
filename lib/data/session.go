@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/heroku/hypemeter-core/lib/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"time"
@@ -33,16 +34,12 @@ func Authorize(c *gin.Context) {
 		_ = GetOne("sessions", sessionConstraint, &session)
 		if session.Expired() {
 			_ = session.Remove()
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"status": "Invalid Session ID",
-			})
+			_ = c.AbortWithError(http.StatusUnauthorized, util.ResponseErr{Status: "Invalid Session ID"})
 		} else {
 			c.Next()
 		}
 	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": "Invalid Session ID",
-		})
+		_ = c.AbortWithError(http.StatusUnauthorized, util.ResponseErr{Status: "Invalid Session ID"})
 	}
 }
 
