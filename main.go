@@ -30,6 +30,7 @@ func main() {
 	//groups
 	authorized := router.Group(apiBasePath, data.Authorize)
 	authorized.GET("/test", data.Test)
+	authorized.GET("/profile/view", component.ViewProfile)
 
 	router.POST("/login", component.HandleLogin)
 
