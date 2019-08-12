@@ -39,7 +39,7 @@ func Authorize(c *gin.Context) {
 			c.JSON(http.StatusUnauthorized, c.Errors.Last().JSON())
 			return
 		} else {
-			fmt.Println("??")
+			fmt.Println(session.CreationTime)
 			c.Next()
 			return
 		}
