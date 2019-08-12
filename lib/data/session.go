@@ -1,14 +1,13 @@
 package data
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"time"
 )
 
-const lifeDuration int64 = 3600000
+const lifeDuration int64 = 3600
 
 type Session struct {
 	SessionID    string `json:"session_id" bson:"session_id"`
@@ -19,7 +18,6 @@ type Session struct {
 func (s Session) Expired() bool {
 	var currTime = time.Now().Unix()
 	var timeElapsed = currTime - s.CreationTime
-	fmt.Println(timeElapsed)
 	return timeElapsed > lifeDuration
 }
 
@@ -35,13 +33,11 @@ func Authorize(c *gin.Context) {
 		var session Session
 		_ = GetOne("sessions", sessionConstraint, &session)
 		if session.Expired() {
-			fmt.Println("Yes, this is right")
 			_ = session.Remove()
 			_ = c.AbortWithError(http.StatusUnauthorized, ResponseErr{Status: "Invalid Session ID"})
 			c.JSON(http.StatusUnauthorized, c.Errors.Last().JSON())
 			return
 		} else {
-			fmt.Println(session.CreationTime)
 			c.Next()
 			return
 		}
