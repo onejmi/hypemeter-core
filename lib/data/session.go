@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
@@ -32,11 +33,13 @@ func Authorize(c *gin.Context) {
 		var session Session
 		_ = GetOne("sessions", sessionConstraint, &session)
 		if session.Expired() {
+			fmt.Println("Yes, this is right")
 			_ = session.Remove()
 			_ = c.AbortWithError(http.StatusUnauthorized, ResponseErr{Status: "Invalid Session ID"})
 			c.JSON(http.StatusUnauthorized, c.Errors.Last().JSON())
 			return
 		} else {
+			fmt.Println("??")
 			c.Next()
 			return
 		}

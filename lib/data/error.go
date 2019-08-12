@@ -1,7 +1,7 @@
 package data
 
 type ResponseErr struct {
-	Status string `json:"status"`
+	Status string
 }
 
 func (err ResponseErr) Error() string {
