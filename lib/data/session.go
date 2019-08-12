@@ -2,7 +2,6 @@ package data
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/heroku/hypemeter-core/lib/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"time"
