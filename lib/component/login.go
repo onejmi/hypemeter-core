@@ -3,6 +3,7 @@ package component
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	googleAuthIDTokenVerifier "github.com/futurenda/google-auth-id-token-verifier"
 	"github.com/gin-gonic/gin"
 	"github.com/heroku/hypemeter-core/lib/data"
@@ -47,6 +48,15 @@ func HandleLogin(c *gin.Context) {
 						},
 						CreationTime: time.Now().Unix(),
 					})
+				} else {
+					_, err := data.Update("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}},
+						bson.D{{Key: "google_auth", Value: data.OAuth{
+							AccessToken: auth.AccessToken,
+						},
+						}}, false)
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 				var session data.Session
 				if !data.Exists("sessions", bson.D{{Key: "user_id", Value: googleProfile.Sub}}) {
