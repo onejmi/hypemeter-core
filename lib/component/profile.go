@@ -8,12 +8,12 @@ import (
 )
 
 type PublicProfile struct {
-	Username     string   `json:"username"`
-	Picture      string   `json:"picture"`
-	Tier         int      `json:"tier"`
-	FollowCount  int      `json:"follow_count"`
-	Following    []string `json:"following"`
-	CreationTime int64    `json:"creation_time"`
+	Username     string   `json:"username" bson:"username"`
+	Picture      string   `json:"picture" bson:"picture"`
+	Tier         int      `json:"tier" bson:"tier"`
+	FollowCount  int      `json:"follow_count" bson:"follow_count"`
+	Following    []string `json:"following" bson:"following"`
+	CreationTime int64    `json:"creation_time" bson:"creation_time"`
 }
 
 func ViewProfile(c *gin.Context) {
