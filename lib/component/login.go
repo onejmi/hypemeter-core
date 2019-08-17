@@ -38,11 +38,13 @@ func HandleLogin(c *gin.Context) {
 			if derr == nil {
 				if !data.Exists("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}) {
 					data.Insert("profiles", data.Profile{
-						Id:       googleProfile.Sub,
-						Email:    googleProfile.Email,
-						Username: util.GrabYoutubeName(googleProfile.Email, auth.AccessToken),
-						Picture:  googleProfile.Picture,
-						Tier:     0,
+						Id:          googleProfile.Sub,
+						Email:       googleProfile.Email,
+						Username:    util.GrabYoutubeName(googleProfile.Email, auth.AccessToken),
+						Picture:     googleProfile.Picture,
+						Tier:        0,
+						FollowCount: 0,
+						Following:   []string{},
 						GoogleAuth: data.OAuth{
 							AccessToken: auth.AccessToken,
 						},
