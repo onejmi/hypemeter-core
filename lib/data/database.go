@@ -67,7 +67,7 @@ func List(collectionName string, filters bson.D) *mongo.Cursor {
 	return cursor
 }
 
-func Update(collectionName string, filter bson.D, update bson.D, upsert bool) (*mongo.UpdateResult, error) {
+func Update(collectionName string, filter bson.D, update bson.M, upsert bool) (*mongo.UpdateResult, error) {
 	return DatabaseClient.Database(DatabaseName).Collection(collectionName).UpdateOne(context.TODO(), filter, update,
 		&options.UpdateOptions{Upsert: &upsert})
 }

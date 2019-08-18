@@ -59,10 +59,10 @@ func HandleLogin(c *gin.Context) {
 					})
 				} else {
 					_, err := data.Update("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}},
-						bson.D{
-							{Key: "google_auth", Value: data.OAuth{AccessToken: auth.AccessToken}},
-							{Key: "picture", Value: picture}},
-						false)
+						bson.M{"$set": bson.M{
+							"google_auth": data.OAuth{AccessToken: auth.AccessToken},
+							"picture":     picture},
+						}, false)
 					if err != nil {
 						fmt.Println(err)
 					}
