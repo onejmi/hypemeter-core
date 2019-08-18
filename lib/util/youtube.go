@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/youtube/v3"
 	"net/http"
@@ -33,6 +34,7 @@ func GrabYoutubeProfile(email string, accessToken string) (profile YoutubeProfil
 		if item.Statistics.SubscriberCount >= topSubCount {
 			topSubCount = item.Statistics.SubscriberCount
 			name = item.Snippet.Title
+			fmt.Println(item.Snippet.Thumbnails.Default.Url)
 			pictureLink = item.Snippet.Thumbnails.Default.Url
 		}
 	}
