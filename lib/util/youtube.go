@@ -8,7 +8,16 @@ import (
 	"strings"
 )
 
-func GrabYoutubeName(email string, accessToken string) (name string) {
+type YoutubeProfile struct {
+	Name        string
+	PictureLink string
+}
+
+func GrabYoutubeProfile(email string, accessToken string) (profile YoutubeProfile) {
+
+	var name string
+	var pictureLink string
+
 	client := genClient(accessToken)
 	youtubeService, err := youtube.New(client)
 
@@ -24,15 +33,20 @@ func GrabYoutubeName(email string, accessToken string) (name string) {
 		if item.Statistics.SubscriberCount >= topSubCount {
 			topSubCount = item.Statistics.SubscriberCount
 			name = item.Snippet.Title
+			pictureLink = item.Snippet.Thumbnails.Default.Url
 		}
 	}
 
 	if name == "" {
 		cutIndex := strings.IndexRune(email, '@')
 		name = email[:cutIndex]
+		pictureLink = ""
 	}
 
-	return name
+	return YoutubeProfile{
+		Name:        name,
+		PictureLink: pictureLink,
+	}
 }
 
 func genClient(accessToken string) *http.Client {

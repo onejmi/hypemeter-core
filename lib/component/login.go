@@ -36,12 +36,19 @@ func HandleLogin(c *gin.Context) {
 		if verr == nil {
 			googleProfile, derr := googleAuthIDTokenVerifier.Decode(auth.IdToken)
 			if derr == nil {
+				youtubeProfile := util.GrabYoutubeProfile(googleProfile.Email, auth.AccessToken)
+				var picture string
+				if len(youtubeProfile.PictureLink) > 0 {
+					picture = youtubeProfile.PictureLink
+				} else {
+					picture = googleProfile.Picture
+				}
 				if !data.Exists("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}}) {
 					data.Insert("profiles", data.Profile{
 						Id:          googleProfile.Sub,
 						Email:       googleProfile.Email,
-						Username:    util.GrabYoutubeName(googleProfile.Email, auth.AccessToken),
-						Picture:     googleProfile.Picture,
+						Username:    youtubeProfile.Name,
+						Picture:     picture,
 						Tier:        0,
 						FollowCount: 0,
 						Following:   []string{},
@@ -52,10 +59,10 @@ func HandleLogin(c *gin.Context) {
 					})
 				} else {
 					_, err := data.Update("profiles", bson.D{{Key: "id", Value: googleProfile.Sub}},
-						bson.D{{Key: "google_auth", Value: data.OAuth{
-							AccessToken: auth.AccessToken,
-						},
-						}}, false)
+						bson.D{
+							{Key: "google_auth", Value: data.OAuth{AccessToken: auth.AccessToken}},
+							{Key: "picture", Value: picture}},
+						false)
 					if err != nil {
 						fmt.Println(err)
 					}
