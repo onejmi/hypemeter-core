@@ -34,7 +34,6 @@ func GrabYoutubeProfile(email string, accessToken string) (profile YoutubeProfil
 		if item.Statistics.SubscriberCount >= topSubCount {
 			topSubCount = item.Statistics.SubscriberCount
 			name = item.Snippet.Title
-			fmt.Println(item.Snippet.Thumbnails.Default.Url)
 			pictureLink = item.Snippet.Thumbnails.Default.Url
 		}
 	}
@@ -42,6 +41,7 @@ func GrabYoutubeProfile(email string, accessToken string) (profile YoutubeProfil
 	if name == "" {
 		cutIndex := strings.IndexRune(email, '@')
 		name = email[:cutIndex]
+		fmt.Println(name)
 		pictureLink = ""
 	}
 
